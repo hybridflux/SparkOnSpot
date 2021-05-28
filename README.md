@@ -148,7 +148,7 @@ The API is expected to execute a compensation strategy in `Action` which may inc
 
 ### Standalone Spark Environment (Eviction Simulation)
 
-Due to access restrictions to the instances on Databricks, we were not able to simulate an actual eviction. To simulate the eviction, we [manually created a cluster](./standalone/SparkEnvironment.md) and installed the necessary Spark binaries to run the workload from the scenario running on Databricks and submitted it as a Spark job to run on the cluster. The [workload code](./src/python/workload.py) was only modified to run on the standalone Spark environment without changing its functionality. The setup contains:
+Due to access restrictions to the instances on Databricks, we were not able to simulate an actual eviction. To simulate the eviction, we manually created a cluster and installed the necessary Spark binaries to run the workload from the scenario running on Databricks and submitted it as a Spark job to run on the cluster. The [workload code](./src/python/workload.py) was only modified to run on the standalone Spark environment without changing its functionality. The setup contains:
 
 - a Spark Driver VM (Non-Spot),
 - a Spark Worker VM (Non-Spot),
