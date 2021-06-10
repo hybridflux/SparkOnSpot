@@ -118,7 +118,7 @@ To handle the eviction notice, we created an [Eviction Handler Azure Function](.
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
     context.log.info('eviction notice received from ' + JSON.stringify( req.body ) );
 
-    // call Action upon evision notice
+    // call Action upon eviction notice
     try {
         Action( context.req.body.name, context.req.body.rgname );
     
