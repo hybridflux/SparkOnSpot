@@ -66,7 +66,7 @@ The scheduled events API imposes the following constraints
 - The polling interval needs to be less than the minimum notice for the event (30 seconds for Spot VM eviction).
 - **The API is only accessible from within the VM.**
 
-> Given the eviction must be detected from within the VM that will be evicted, there is an extremely small window ( >30 seconds) to react to the event.
+> Given the eviction must be detected from within the VM that will be evicted, there is an extremely small window ( <30 seconds) to react to the event.
 
 ### Simulation
 
