@@ -52,7 +52,7 @@ There are several possibilities to complensate an eviction. The choices could de
 
 #### All on Spot
 
-As an example, an organization could choose to deploy SpotVMs to process workloads which are not time-critical and which could be re-run in case the Spot instances get evicted while processing the workload. When an eviction gets detected, a call could be made to a custom service (i.e. Azure Functions) to compensate the eviction by
+As an example, an organization could choose to deploy Spot VMs to process workloads which are not time-critical and which could be re-run in case the Spot instances get evicted while processing the workload. When an eviction gets detected, a call could be made to a custom service (i.e. Azure Functions) to compensate the eviction by
 
 - restarting a deallocated VM,
 - deploying other available Spot VM types,
@@ -62,7 +62,9 @@ As an example, an organization could choose to deploy SpotVMs to process workloa
 
 #### Mixed Spot and on-demand VMs
 
-A deployment within a cluster could initially be a mixture of on-demand and Spot VMs, with on-demand VMs to pick up processing once SpotVMs get evicted. Once the eviction is detected, other Spot instances or on-demand VMs could be added to the cluster to distribute the load.
+A deployment within a cluster could initially be a mixture of on-demand and Spot VMs, with on-demand VMs to pick up processing once Spot VMs get evicted. Once the eviction is detected, other Spot instances or on-demand VMs could be added to the cluster to distribute the load. This could apply to vanilla Spark workloads running in a VM scale set. A mixed deployment of Spot and on-demand VMs allows for the Spark workload to continue on on-demand instances while evicted Spot VMs are replaced and restarted.
+
+Another example could be a temporary burst-out scenario, leveraging Spot VMs in addition to on-demand instances. Azure Kubernetes Services supports non-default node pools to run Spot VMs. Services could be deployed on the default, secondary Spot node pool, *or both*. In the time frame eviction occurs and the compensation strategy takes effect, the service still runs on the default on-demand pool and is available.
 
 In the particular scenario we investigated below, the Azure Service running the workload is Databricks, which is a managed service with settings to control the behaviour of the cluster when deploying Spot VMs. The driver node, which controls job and task execution on worker nodes, is by default deployed on an on-demand VM and cannot be changed to run on Spot. When evicted, worker node Spot VMs can be replaced by on-demand VMs if a specific setting is used. Databricks manages the eviction with a specific compensation in this scenario.
 
