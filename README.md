@@ -170,7 +170,7 @@ The API is expected to execute a compensation strategy in `Action` which may inc
     };
 ```
 
-> Note that this may not be the right approach with managed services such as Databricks since eviction can be prevented with the setting of `spot_bid_max_price=-1`, or the setting to fall back to standard instances with `availability=SPOT_WITH_FALLBACK_AZURE` can be applied.
+Since Databricks has its in-built compensation mechanism to prevent the disruption of the service with `spot_bid_max_price=-1`, or the setting to fall back to standard instances with `availability=SPOT_WITH_FALLBACK_AZURE`, it is not necessary to restart or provision VM instances. The Action set here could be a notification to service administrators or a modification of the cluster configuration with another available Spot VM type and restarting the job.
 
 ### Standalone Spark Environment (Eviction Simulation)
 
@@ -188,8 +188,6 @@ We simulated various evictions:
 - Restart Spot VM: When the Spot VM came back up, it joined the cluster and started getting work (as expected).
 
 The Driver node keeps track of the job and task completion of the workload on the Worker nodes and intructs either the remaining Non-Spot node or a restarted node to continue processing the job/tasks.
-
-> Todo: Ensure the same results are achieved when Spot VMs get evicted and are restarted/rejoined to the cluster.
 
 ## Financial Impacts + Considerations
 
