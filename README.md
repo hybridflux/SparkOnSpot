@@ -47,20 +47,24 @@ Given the concerns above, the solution NFRs can be summarized as:
 There are several possibilities to complensate an eviction. The choices could depend on
 
 - the type of workload,
-- the type of Azure Services used (managed service vs. unmanaged), or
+- the type of Azure Service used (managed service vs. unmanaged), or
 - the SLAs required (length of run, near real-time reponse).
 
 #### All on Spot
 
-As an example, an organization could choose to deploy SpotVMs to process workloads that are not time-critical and that could be re-run in case the Spot instances get evicted while processing the workload. When an eviction gets detected, a call could be made to compensate the eviction by deploying other available Spot VM types or on-demand VMs for the cluster.
+As an example, an organization could choose to deploy SpotVMs to process workloads which are not time-critical and which could be re-run in case the Spot instances get evicted while processing the workload. When an eviction gets detected, a call could be made to compensate the eviction by
+
+- restarting a deallocated VM,
+- deploying other available Spot VM types,
+- or deploying on-demand VMs to the cluster.
 
 > Note: Information about the probability of a Spot VM type to be evicted in a region can be obtained from the Azure portal when creating a Spot VM. A specific VM type could be chosen by least probability of eviction in the region. Currently, this information cannot be obtained programmatically.
 
 #### Mixed Spot and on-demand VMs
 
-A deployment within a cluster could initially be a mixture of on-demand and Spot VMs, with on-demand VMs picking up processing once SpotVMs get evicted. Once the eviction is detected, other Spot instances or on-demand VMs could be added to the cluster to distribute the load.
+A deployment within a cluster could initially be a mixture of on-demand and Spot VMs, with on-demand VMs to pick up processing once SpotVMs get evicted. Once the eviction is detected, other Spot instances or on-demand VMs could be added to the cluster to distribute the load.
 
-In the particular Energinet scenario we investigated, the Azure Service running the workload is Databricks, which is a managed service with settings to control the behaviour of the cluster when deploying Spot VMs. The driver node, which controls job and task execution on worker nodes, is by default deployed on an on-demand VM and cannot be changed to run on Spot. When evicted, worker node Spot VMs can be replaced by on-demand VMs if a specific setting is used. Databricks manages the eviction with a specific compensation in this scenario.
+In the particular scenario we investigated below, the Azure Service running the workload is Databricks, which is a managed service with settings to control the behaviour of the cluster when deploying Spot VMs. The driver node, which controls job and task execution on worker nodes, is by default deployed on an on-demand VM and cannot be changed to run on Spot. When evicted, worker node Spot VMs can be replaced by on-demand VMs if a specific setting is used. Databricks manages the eviction with a specific compensation in this scenario.
 
 ## Workload Scenario
 
