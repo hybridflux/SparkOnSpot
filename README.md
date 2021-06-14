@@ -19,7 +19,7 @@ The scheduled events API imposes the following constraints
 - The polling interval needs to be less than the minimum notice for the event (30 seconds for Spot VM eviction).
 - **The API is only accessible from within the VM.**
 
-> Given the eviction must be detected from within the VM that will be evicted, there is an extremely small window ( >30 seconds) to react to the event.
+> Given the eviction must be detected from within the VM that will be evicted, there is an extremely small window (smaller than 30 seconds) to react to the event.
 
 ### Simulation
 
@@ -59,6 +59,8 @@ As an example, an organization could choose to deploy SpotVMs to process workloa
 #### Mixed Spot and on-demand VMs
 
 A deployment within a cluster could initially be a mixture of on-demand and Spot VMs, with on-demand VMs picking up processing once SpotVMs get evicted. Once the eviction is detected, other Spot instances or on-demand VMs could be added to the cluster to distribute the load.
+
+In the particular Energinet scenario we investigated, the Azure Service running the workload is Databricks, which is a managed service with settings to control the behaviour of the cluster when deploying Spot VMs. The driver node, which controls job and task execution on worker nodes, is by default deployed on an on-demand VM and cannot be changed to run on Spot. When evicted, worker node Spot VMs can be replaced by on-demand VMs if a specific setting is used. Databricks manages the eviction with a specific compensation in this scenario.
 
 ## Workload Scenario
 
