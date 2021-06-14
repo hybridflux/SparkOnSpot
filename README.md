@@ -52,7 +52,7 @@ There are several possibilities to complensate an eviction. The choices could de
 
 #### All on Spot
 
-As an example, an organization could choose to deploy SpotVMs to process workloads which are not time-critical and which could be re-run in case the Spot instances get evicted while processing the workload. When an eviction gets detected, a call could be made to compensate the eviction by
+As an example, an organization could choose to deploy SpotVMs to process workloads which are not time-critical and which could be re-run in case the Spot instances get evicted while processing the workload. When an eviction gets detected, a call could be made to a custom service (i.e. Azure Functions) to compensate the eviction by
 
 - restarting a deallocated VM,
 - deploying other available Spot VM types,
