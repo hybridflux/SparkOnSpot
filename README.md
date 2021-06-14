@@ -39,7 +39,7 @@ As noted above, the eviction can only be detected from within the VM that will b
 
 Given the concerns above, the solution NFRs can be summarized as:
 
-- Schedule events API must be polled from each Spot VM at an interval > 30 seconds
+- Schedule events API must be polled from each Spot VM at an interval smaller than or equals to 30 seconds
 - The eviction compensation strategy must execute despite the VM having been evicted
 
 ### Compensation strategies
