@@ -1,13 +1,72 @@
 # Reduce Carbon Emissions with Spot VMs
 
-Running applications on Spot VMs helps reduce carbon emissions by reducing energy consumption of an application and by reducing the need to purchase more datacenter hardware by increasing utilization of existing hardware. The latter significantly contributes to Scope 3 carbon emissions.
+Running applications on Spot VMs helps reduce carbon emissions by reducing energy consumption of an application and by reducing the need to purchase more datacenter hardware by increasing utilization of existing hardware. The latter significantly contributes to [Scope 3 carbon emissions](https://www.epa.gov/climateleadership/scope-3-inventory-guidance).
 
-Currently very little documentation and guidance exists on how to run production-grade workloads on Spot VMs. The project migrates an existing production workload to Spot VMs to learn about challenges and capture successful patterns in a migration playbook.
+Currently very little documentation and guidance exists on how to run production-grade workloads on [Spot Virtual Machines](https://docs.microsoft.com/en-us/azure/virtual-machines/spot-vms) (Spot VMs). The project migrates an existing production workload to Spot VMs to learn about challenges and capture successful patterns in a migration playbook.
 
-In a Hack for Good week relating to Sustainability, a team within Commercial Software Engineering (CSE) at Microsoft ran a Spark workload of a previous engagement with Energinet (as part of the [Green Energy Hub](https://github.com/Energinet-DataHub/green-energy-hub)) on Spot VMs, leveraging the scenario and assets created in the engagement.
+In a Hack for Good week relating to Sustainability, a team within Commercial Software Engineering (CSE) investigated strategies to work with and compensate an eviction of Spot VMs. We worked with a production-grade Spark workload of a previous engagement with Energinet (as part of the [Green Energy Hub](https://github.com/Energinet-DataHub/green-energy-hub)) as an example, leveraging the scenario and assets created in the engagement.
 
 *Authors and project team in alphabetical order:*
 *[Brandy Brown](https://github.com/brandynbrown), [Charles Zipp](https://github.com/charleszipp), [Christoph Schittko](https://github.com/xtophs), [Chuck Heinzelman](https://github.com/chuckheinzelman), [Neeraj Joshi](https://github.com/neejoshi), [Olha Konstantinova](https://github.com/OlhaKonstant), [Sherryl Manalo](https://github.com/hybridflux), [Sujit D'Mello](https://github.com/sujitdmello)*
+
+## Detecting Evictions
+
+The recommended approach for [detecting evictions](https://docs.microsoft.com/en-us/azure/virtual-machines/spot-vms#eviction-policy) is to use the [Scheduled Events API](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/scheduled-events).
+
+The scheduled events API imposes the following constraints
+
+- The api must be polled. There is no push notification.
+- The polling interval needs to be less than the minimum notice for the event (30 seconds for Spot VM eviction).
+- **The API is only accessible from within the VM.**
+
+> Given the eviction must be detected from within the VM that will be evicted, there is an extremely small window (smaller than 30 seconds) to react to the event.
+
+### Simulation
+
+Evictions can be simulated in cases where the VM is not part of a managed platform such as Azure Databricks or HDInsight. Eviction can be simulated for these VM's using the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/vm?view=azure-cli-latest#az_vm_simulate_eviction)
+
+```shell
+az vm simulate-eviction --resource-group MyResourceGroup --name MyVm
+```
+
+## Eviction Compensation
+
+As noted above, the eviction can only be detected from within the VM that will be evicted. The time between detection and eviction could be under 30 seconds, depending on when it is detected. Compensation strategies will likely involve interactions with AzureRM to spin up new VMs, which could take minutes. This imposes another constraint:
+
+- The compensation strategy will need to be able to run after the VM has been evicted (asynchronous execution).
+
+### Solution Requirements
+
+Given the concerns above, the solution NFRs can be summarized as:
+
+- Schedule events API must be polled from each Spot VM at an interval smaller than or equals to 30 seconds
+- The eviction compensation strategy must execute despite the VM having been evicted
+
+### Compensation strategies
+
+There are several possibilities to complensate an eviction. The choices could depend on
+
+- the type of workload,
+- the type of Azure Service used (managed service vs. unmanaged), or
+- the SLAs required (length of run, near real-time reponse).
+
+#### All on Spot
+
+As an example, an organization could choose to deploy Spot VMs to process workloads which are not time-critical and which could be re-run in case the Spot instances get evicted while processing the workload. When an eviction gets detected, a call could be made to a custom service (i.e. Azure Functions) to compensate the eviction by
+
+- restarting a deallocated VM,
+- deploying other available Spot VM types,
+- or deploying on-demand VMs to the cluster.
+
+> Note: Information about the probability of a Spot VM type to be evicted in a region can be obtained from the Azure portal when creating a Spot VM. A specific VM type could be chosen by least probability of eviction in the region. Currently, this information cannot be obtained programmatically.
+
+#### Mixed Spot and on-demand VMs
+
+A deployment within a cluster could initially be a mixture of on-demand and Spot VMs, with on-demand VMs to pick up processing once Spot VMs get evicted. Once the eviction is detected, other Spot instances or on-demand VMs could be added to the cluster to distribute the load. This could apply to vanilla Spark workloads running in a VM scale set. A mixed deployment of Spot and on-demand VMs allows for the Spark workload to continue on on-demand instances while evicted Spot VMs are replaced and restarted.
+
+Another example could be a temporary burst-out scenario, leveraging Spot VMs in addition to on-demand instances. Azure Kubernetes Services supports non-default node pools to run Spot VMs. Services could be deployed on the default, secondary Spot node pool, *or both*. In the time frame eviction occurs and the compensation strategy takes effect, the service still runs on the default on-demand pool and is available.
+
+In the particular scenario we investigated below, the Azure Service running the workload is Databricks, which is a managed service with settings to control the behaviour of the cluster when deploying Spot VMs. The driver node, which controls job and task execution on worker nodes, is by default deployed on an on-demand VM and cannot be changed to run on Spot. When evicted, worker node Spot VMs can be replaced by on-demand VMs if a specific setting is used. Databricks manages the eviction with a specific compensation in this scenario.
 
 ## Workload Scenario
 
@@ -55,39 +114,6 @@ In order to confirm wheter the system resorts to on-demand instances in case the
 Our expectation was, that the cluster Worker node would be created on on-demand instances. However, the cluster creation fails consistently. The possible explanation is that the setting `availability=SPOT_WITH_FALLBACK_AZURE` only goes into effect once a cluster is up and running and that it initially tries to use Spot VMs for the Worker nodes. This will fail since the Spot price is too low.
 
 Changing the `spot_max_bid_price` to a value just above the current Spot asking price results in the cluster successfully being created.
-
-## Detecting Evictions
-
-The recommended approach for [detecting evictions](https://docs.microsoft.com/en-us/azure/virtual-machines/spot-vms#eviction-policy) is to use the [Scheduled Events API](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/scheduled-events).
-
-The scheduled events API imposes the following constraints
-
-- The api must be polled. There is no push notification.
-- The polling interval needs to be less than the minimum notice for the event (30 seconds for Spot VM eviction).
-- **The API is only accessible from within the VM.**
-
-> Given the eviction must be detected from within the VM that will be evicted, there is an extremely small window ( <30 seconds) to react to the event.
-
-### Simulation
-
-Evictions can be simulated in cases where the VM is not part of a managed platform such as Azure Databricks or HDInsight. Eviction can be simulated for these VM's using the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/vm?view=azure-cli-latest#az_vm_simulate_eviction)
-
-```shell
-az vm simulate-eviction --resource-group MyResourceGroup --name MyVm
-```
-
-## Eviction Compensation
-
-As noted above, the eviction can only be detected from within the VM that will be evicted. The time between detection and eviction could be under 30 seconds, depending on when it is detected. Compensation strategies will likely involve interactions with AzureRM to spin up new VMs, which could take minutes. This imposes another constraint:
-
-- The compensation strategy will need to be able to run after the VM has been evicted (asynchronous execution).
-
-### Solution Requirements
-
-Given the concerns above, the solution NFRs can be summarized as:
-
-- Schedule events API must be polled from each Spot VM at an interval > 30 seconds
-- The eviction compensation strategy must execute despite the VM having been evicted
 
 ## Solutioning: Our Approach
 
@@ -144,7 +170,7 @@ The API is expected to execute a compensation strategy in `Action` which may inc
     };
 ```
 
-> Note that this may not be the right approach with managed services such as Databricks since eviction can be prevented with the setting of `spot_bid_max_price=-1`, or the setting to fall back to standard instances with `availability=SPOT_WITH_FALLBACK_AZURE` can be applied.
+Since Databricks has its in-built compensation mechanism to prevent the disruption of the service with `spot_bid_max_price=-1`, or the setting to fall back to standard instances with `availability=SPOT_WITH_FALLBACK_AZURE`, it is not necessary to restart or provision VM instances. The Action set here could be a notification to service administrators or a modification of the cluster configuration with another available Spot VM type and restarting the job.
 
 ### Standalone Spark Environment (Eviction Simulation)
 
@@ -162,8 +188,6 @@ We simulated various evictions:
 - Restart Spot VM: When the Spot VM came back up, it joined the cluster and started getting work (as expected).
 
 The Driver node keeps track of the job and task completion of the workload on the Worker nodes and intructs either the remaining Non-Spot node or a restarted node to continue processing the job/tasks.
-
-> Todo: Ensure the same results are achieved when Spot VMs get evicted and are restarted/rejoined to the cluster.
 
 ## Financial Impacts + Considerations
 
