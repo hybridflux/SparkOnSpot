@@ -1,4 +1,4 @@
-# Table of Contents
+# Sustainability Through Spot VMs
 
 ## Project Intention
 This project was implemented as a part of OneCSEWeek. The intention of the project was to prove out that you can run production-grade applications utilizing Spot VMs.
