@@ -12,7 +12,7 @@ Azure Spot VMs utilize unused capacity in existing data center infrastructure. W
 
 > We set out to prove it possible.
 
-Before jumping into the project, let's talk a little bit about the sustainability piece. The EPA has defined different scopes, or types, of carbon emissions. Utilizing Spot VMs helps reduce [scope 3 carbon emissions](https://www.epa.gov/climateleadership/scope-3-inventory-guidance). By utilizing existing infrastructure, we are able to reduce the need for more hardware and energy to run that new hardware.
+Before jumping into the project, let's talk a little more about the sustainability piece. The EPA has defined different scopes, or types, of carbon emissions. Utilizing Spot VMs helps reduce [scope 3 carbon emissions](https://www.epa.gov/climateleadership/scope-3-inventory-guidance). By taking advantage of existing infrastructure, we are able to reduce the need for more hardware and energy to run that new hardware in our data centers. 
 
 # The Project
 This project migrates an existing production workload to Spot VMs to learn about challenges and capture successful patterns in a migration playbook. As a part of this project, we investigated strategies to work with and compensate an eviction of Spot VMs. We worked with a production-grade Spark workload of a previous engagement with Energinet (as part of the [Green Energy Hub](https://github.com/Energinet-DataHub/green-energy-hub)) as an example, leveraging the scenario and assets created in the engagement.
