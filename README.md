@@ -1,7 +1,7 @@
 # Sustainability Through Spot VMs
 
 ## Project Intention
-This project was implemented as a part of OneCSEWeek. The intention of the project was to prove out that you can run production-grade applications utilizing Spot VMs.
+This project was implemented as a part of OneCSEWeek. The intention of the project was to prove out that you can run production-grade workloads utilizing Spot VMs.
 
 ## Backstory: What's OneCSEWeek?
 Commercial Software Engineering team (CSE) is a global engineering organization at Microsoft that works directly with engineers from the largest companies and not-for-profits in the world. We work in a code-with manner to tackle the world's most significant technical challenges.
