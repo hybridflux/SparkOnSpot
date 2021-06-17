@@ -4,13 +4,15 @@
 This project was implemented as a part of OneCSEWeek. The intention of the project was to prove out that you can run production-grade applications utilizing Spot VMs.
 
 ## Backstory: What's OneCSEWeek?
-The Commercial Software Engineering team (CSE) is a global engineering organization at Microsoft that works directly with engineers from the largest companies and not-for-profits in the world in a code-with manner to tackle their most significant technical challenges.
+Commercial Software Engineering team (CSE) is a global engineering organization at Microsoft that works directly with engineers from the largest companies and not-for-profits in the world. We work in a code-with manner to tackle the world's most significant technical challenges.
 
-OneCSEWeek is an opportunity for members of that organization to come together internally for one week. During this week, we pause all customer-related work and pick projects that drive our passions and improve the world. This year, our OCW team chose a project that drives sustainability through the utilization of Azure [Spot Virtual Machines](https://docs.microsoft.com/en-us/azure/virtual-machines/spot-vms) (Spot VMs).
+OneCSEWeek is an opportunity for members of that organization to come together internally for one week. During this week, we pause all customer-related work and pick projects that drive our passions and improve the world. This year, our OCW team chose a project that drives sustainability through the utilization of [Azure Spot Virtual Machines](https://docs.microsoft.com/en-us/azure/virtual-machines/spot-vms) (Spot VMs).
 
-Azure Spot VMs utilize unused capacity in existing data center infrastructure. When the capacity is needed again, you are given a 30-second notice that your Spot VM will be evicted. The question that usually follows is whether or not you can run a production-grade workload on ever-evicting VMs. We set out to prove it possible.
+Azure Spot VMs utilize unused capacity in existing data center infrastructure. When the capacity is needed again, you are given a 30-second notice that your Spot VM will be evicted. The question that usually follows is whether or not it's truly feasible to run production-grade workloads on ever-evicting VMs. 
 
-Before jumping into the project, let's talk about the sustainability piece. The EPA has defined different types of emmissions scope. Utilizing Spot VMs helps reduce [scope 3 carbon emissions](https://www.epa.gov/climateleadership/scope-3-inventory-guidance). By utilizing existing infrastructure, we are able to reduce the need for more hardware and energy to run that new hardware.
+> We set out to prove it possible.
+
+Before jumping into the project, let's talk a little bit about the sustainability piece. The EPA has defined different scopes, or types, of carbon emissions. Utilizing Spot VMs helps reduce [scope 3 carbon emissions](https://www.epa.gov/climateleadership/scope-3-inventory-guidance). By utilizing existing infrastructure, we are able to reduce the need for more hardware and energy to run that new hardware.
 
 # The Project
 - - - - 
