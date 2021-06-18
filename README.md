@@ -1,10 +1,21 @@
-# Reduce Carbon Emissions with Spot VMs
+# Sustainability Through Spot VMs
 
-Running applications on Spot VMs helps reduce carbon emissions by reducing energy consumption of an application and by reducing the need to purchase more datacenter hardware by increasing utilization of existing hardware. The latter significantly contributes to [Scope 3 carbon emissions](https://www.epa.gov/climateleadership/scope-3-inventory-guidance).
+## Project Intention
+This project was implemented as a part of OneCSEWeek. The intention of the project was to prove out that you can run production-grade workloads utilizing Spot VMs.
 
-Currently very little documentation and guidance exists on how to run production-grade workloads on [Spot Virtual Machines](https://docs.microsoft.com/en-us/azure/virtual-machines/spot-vms) (Spot VMs). The project migrates an existing production workload to Spot VMs to learn about challenges and capture successful patterns in a migration playbook.
+## Backstory: What's OneCSEWeek?
+Commercial Software Engineering team (CSE) is a global engineering organization at Microsoft that works directly with engineers from the largest companies and not-for-profits in the world. We work in a code-with manner to tackle the world's most significant technical challenges.
 
-In a Hack for Good week relating to Sustainability, a team within Commercial Software Engineering (CSE) investigated strategies to work with and compensate an eviction of Spot VMs. We worked with a production-grade Spark workload of a previous engagement with Energinet (as part of the [Green Energy Hub](https://github.com/Energinet-DataHub/green-energy-hub)) as an example, leveraging the scenario and assets created in the engagement.
+OneCSEWeek is an opportunity for members of that organization to come together internally for one week. During this week, we pause all customer-related work and pick projects that drive our passions and improve the world. This year, our OCW team chose a project that drives sustainability through the utilization of [Azure Spot Virtual Machines](https://docs.microsoft.com/en-us/azure/virtual-machines/spot-vms) (Spot VMs).
+
+Azure Spot VMs utilize unused capacity in existing data center infrastructure. When the capacity is needed again, you are given a 30-second notice that your Spot VM will be evicted. The question that usually follows is whether or not it's truly feasible to run production-grade workloads on ever-evicting VMs. 
+
+> We set out to prove it possible.
+
+Before jumping into the project, let's talk a little more about the sustainability piece. The EPA has defined different scopes, or types, of carbon emissions. Utilizing Spot VMs helps reduce [scope 3 carbon emissions](https://www.epa.gov/climateleadership/scope-3-inventory-guidance). By taking advantage of existing infrastructure, we are able to reduce the need for more hardware and energy to run that new hardware in our data centers. 
+
+# The Project
+This project migrates an existing production workload to Spot VMs to learn about challenges and capture successful patterns in a migration playbook. As a part of this project, we investigated strategies to work with and compensate an eviction of Spot VMs. We worked with a production-grade Spark workload of a previous engagement with Energinet (as part of the [Green Energy Hub](https://github.com/Energinet-DataHub/green-energy-hub)) as an example, leveraging the scenario and assets created in the engagement.
 
 *Authors and project team in alphabetical order:*
 *[Brandy Brown](https://github.com/brandynbrown), [Charles Zipp](https://github.com/charleszipp), [Christoph Schittko](https://github.com/xtophs), [Chuck Heinzelman](https://github.com/chuckheinzelman), [Neeraj Joshi](https://github.com/neejoshi), [Olha Konstantinova](https://github.com/OlhaKonstant), [Sherryl Manalo](https://github.com/hybridflux), [Sujit D'Mello](https://github.com/sujitdmello)*
@@ -42,7 +53,7 @@ Given the concerns above, the solution NFRs can be summarized as:
 - Schedule events API must be polled from each Spot VM at an interval smaller than or equals to 30 seconds
 - The eviction compensation strategy must execute despite the VM having been evicted
 
-### Compensation strategies
+#### Compensation strategies
 
 There are several possibilities to complensate an eviction. The choices could depend on
 
@@ -101,7 +112,7 @@ The deployment was successful as could be seen in the job cluster configuration:
 
 <img src="./images/databricks-spot-config.png" alt="eviction approach" width="600"/>
 
-### Findings on configuration settings used to control Spot VMs changing to regular VMs
+#### Findings on configuration settings used to control Spot VMs changing to regular VMs
 
 **`first_on_demand`**
 &nbsp;  
