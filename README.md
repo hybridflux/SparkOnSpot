@@ -82,7 +82,7 @@ Given the concerns above, the solution NFRs can be summarized as:
 - [**Migration of production Spark workload to SpotVMs**](./ocw-spark/README.md): 
 At OneCSEWeek, we migrated a production workload on Databricks to Spot VMs and investigated compensation strategies for the same workload running on a vanilla Spark cluster with a mix of Spot and on-demand VMs.
 
-## Backstory: What is OneCSEWeek?
+## Backstory: What's OneCSEWeek?
 
 Commercial Software Engineering team (CSE) is a global engineering organization at Microsoft that works directly with engineers from the largest companies and not-for-profits in the world. We work in a code-with manner to tackle the world's most significant technical challenges.
 
