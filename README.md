@@ -6,7 +6,7 @@
 
 > We set out to prove it possible.
 
-We want to investigate strategies to work with and compensate eviction of Spot VMs. Initially, this project was implemented as a part of [OneCSEWeek](#Backstory-What's-OneCSEWeek?) with the intention to prove out that you can run production-grade workloads utilizing Spot VMs. We chose an existing production Spark workload to learn about challenges and capture successful patterns in a migration playbook.
+We want to investigate strategies to work with and compensate eviction of Spot VMs. Initially, this project was implemented as a part of [OneCSEWeek](#backstory-whats-onecseweek) with the intention to prove out that you can run production-grade workloads utilizing Spot VMs. We chose an existing production Spark workload to learn about challenges and capture successful patterns in a migration playbook.
 
 We plan to extend this playbook with other workloads running on additional Azure services going forward and welcome contributions to this document relating to your experience with running workloads on Spot.
 
@@ -14,9 +14,11 @@ Before jumping into the project, let's talk a little more about the **sustainabi
 
 ## General Approach
 
+This approach applies to many scenarios, regardless of the workload and Azure service used.
+
 ### Eviction Detection
 
-The recommended approach for [detecting evictions](https://docs.microsoft.com/en-us/azure/virtual-machines/spot-vms#eviction-policy) is to use the [Scheduled Events API](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/scheduled-events).
+In order to react to an eviction, it first has to be detected. The recommended approach for [detecting evictions](https://docs.microsoft.com/en-us/azure/virtual-machines/spot-vms#eviction-policy) is to use the [Scheduled Events API](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/scheduled-events).
 
 The scheduled events API imposes the following constraints
 
@@ -80,7 +82,7 @@ Given the concerns above, the solution NFRs can be summarized as:
 - [**Migration of production Spark workload to SpotVMs**](./ocw-spark/README.md): 
 At OneCSEWeek, we migrated a production workload on Databricks to Spot VMs and investigated compensation strategies for the same workload running on a vanilla Spark cluster with a mix of Spot and on-demand VMs.
 
-## Backstory: What's OneCSEWeek?
+## Backstory: What is OneCSEWeek?
 
 Commercial Software Engineering team (CSE) is a global engineering organization at Microsoft that works directly with engineers from the largest companies and not-for-profits in the world. We work in a code-with manner to tackle the world's most significant technical challenges.
 
