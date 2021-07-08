@@ -14,7 +14,7 @@ Before jumping into the project, let's talk a little more about the **sustainabi
 
 ## General Approach
 
-This approach applies to many scenarios, regardless of the workload and Azure service used.
+This approach applies to several scenarios, regardless of the workload and Azure service used.
 
 ### Eviction Detection
 
@@ -79,9 +79,11 @@ Given the concerns above, the solution NFRs can be summarized as:
 
 ## List of projects/workloads
 
-- [**Migration of production Spark workload to SpotVMs**](./ocw-spark/README.md): 
+- [**Migration of production Spark workload to SpotVMs**](./ocw-spark/README.md):
 At OneCSEWeek, we migrated a production workload on Databricks to Spot VMs and investigated compensation strategies for the same workload running on a vanilla Spark cluster with a mix of Spot and on-demand VMs.
 
+- Add your project or workload here
+  
 ## Backstory: What's OneCSEWeek?
 
 Commercial Software Engineering team (CSE) is a global engineering organization at Microsoft that works directly with engineers from the largest companies and not-for-profits in the world. We work in a code-with manner to tackle the world's most significant technical challenges.
