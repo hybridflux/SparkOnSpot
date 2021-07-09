@@ -13,7 +13,7 @@ Data is collected from IoT devices in Danish households and sent to IoT Hub to b
 
 Another CSE team worked with Energinet until earlier in the year 2021 on this engagement and published generalized artifacts of the Spark workload processing the incoming data on [GitHub](https://github.com/katyamust/spark-in-production). In this generalized workload, a Databricks job fetches the time series data from Event Hub, and stores them in Delta Lake in parquet files to make it available for further processing and aggregation.  
 
-![](../images/components.png)
+![](./images/components.png)
 
 As a side note, we deployed the infrastructure above with the Github workflow *infra-cd.yml*, leveraging Terraform resource creation on Azure. The workflow deploying the Spark streaming job on Databricks *streaming-cd.yml* creates a new cluster for the job with a specific Spark version, node type, and number of workers.
 ## Solutioning: Our Approach
@@ -37,7 +37,7 @@ new_cluster {
 ```
 The deployment was successful as could be seen in the job cluster configuration:
 
-<img src="../images/databricks-spot-config.png" alt="eviction approach" width="600"/>
+<img src="./images/databricks-spot-config.png" alt="eviction approach" width="600"/>
 
 #### Findings on configuration settings used to control Spot VMs changing to regular VMs
 
@@ -68,13 +68,13 @@ resource "databricks_global_init_script" "evictionnotice" {
 }
 ```
 
-![](../images/databricks-global-init.png)
+![](./images/databricks-global-init.png)
 
 Since Databricks has its in-built compensation mechanism to prevent the disruption of the service with `spot_bid_max_price=-1`, or the setting to fall back to standard instances with `availability=SPOT_WITH_FALLBACK_AZURE`, it is not necessary to restart or provision VM instances. The Action set here could be a notification to service administrators or a modification of the cluster configuration with another available Spot VM type and restarting the job.
 
 ## Standalone Spark Environment
 
-<img src="../images/eviction-notice.png" alt="eviction approach" width="300"/>
+<img src="./images/eviction-notice.png" alt="eviction approach" width="300"/>
 
 Due to access restrictions to the instances on Databricks, we were not able to simulate an actual eviction. To simulate the eviction, we manually created a cluster and installed the necessary Spark binaries to run the workload from the scenario running on Databricks and submitted it as a Spark job to run on the cluster. The [workload code](./src/python/workload.py) was only modified to run on the standalone Spark environment without changing its functionality. The setup contains:
 

@@ -14,7 +14,7 @@ Before jumping into the project, let's talk a little more about the **sustainabi
 
 ## General Approach
 
-This approach applies to several scenarios, regardless of the workload and Azure service used.
+We chose this approach to detect and compensate the  eviction of Spot VMs for our first project, and it could also apply to several other scenarios - regardless of the workload and Azure service used.
 
 ### Eviction Detection
 
